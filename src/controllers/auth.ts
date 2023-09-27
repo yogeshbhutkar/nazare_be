@@ -23,9 +23,9 @@ const generateAccessToken = (user: User) => {
 export const signUp = async (req: Request, res: Response) => {
   const body = req.body;
 
-  const { username, password } = UserValidator.parse(body);
-
   try {
+    const { username, password } = UserValidator.parse(body);
+
     const user = await db.user.create({
       data: {
         username,
@@ -52,9 +52,9 @@ export const signUp = async (req: Request, res: Response) => {
 export const SignIn = async (req: Request, res: Response) => {
   const body = req.body;
 
-  const { username, password } = UserValidator.parse(body);
-
   try {
+    const { username, password } = UserValidator.parse(body);
+
     const user = await db.user.findUnique({
       where: {
         username: username,
@@ -68,8 +68,13 @@ export const SignIn = async (req: Request, res: Response) => {
         username: user.username,
         access_token: generateAccessToken(user),
       });
+    } else {
+      return res.status(401).json({
+        message: "Failure",
+        reason: "Invalid username and/ or password",
+      });
     }
   } catch (err) {
-    return res.status(400).json({ message: "Something went wrong." });
+    return res.status(400).json({ message: "Invalid post data." });
   }
 };

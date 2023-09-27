@@ -14,14 +14,15 @@ export const verify = (
   const authHeader = req.headers.authorization;
   if (authHeader) {
     const token = authHeader.split(" ")[1];
-    jwt.verify(token, "secretKey", (err, user) => {
+    jwt.verify(token, process.env.SECRET!, (err, user) => {
       if (err) {
         return res.status(403).json({ error: "Token invalid" });
       }
       if (user === undefined) {
         return res.status(400).json({ error: "something went wrong" });
       }
-      req.user = user as User;
+      // @ts-ignore
+      req.user = user;
       next();
     });
   } else {
